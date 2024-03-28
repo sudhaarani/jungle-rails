@@ -92,7 +92,7 @@ RSpec.describe User, type: :model do
 
   describe '.authenticate_with_credentials' do
     # examples for this class method here
-    it 'is valid if the email has space' do
+    it 'returns user(authenticate) if the email has space' do
       user = User.new(
         name: "Test Name",
         email: 'test@gmail.com',
@@ -103,5 +103,39 @@ RSpec.describe User, type: :model do
       return_user=User.authenticate_with_credentials(" test@gmail.com ","password")
       expect(return_user).to eq(user)
     end
+    it 'returns user(authenticate) if the email has wrong case' do
+      user = User.new(
+        name: "Test Name",
+        email: 'test@gmail.com',
+        password: 'password',
+        password_confirmation: 'password'
+      )
+      user.save
+      return_user=User.authenticate_with_credentials(" TEst@Gmail.cOM ","password")
+      expect(return_user).to eq(user)
+    end
+    it 'will not authenticate if password is incorrect' do
+      user = User.new(
+        name: "Test Name",
+        email: 'test@gmail.com',
+        password: 'password',
+        password_confirmation: 'password'
+      )
+      user.save
+      return_user=User.authenticate_with_credentials(" test@gmail.com ","password23")
+      expect(return_user).to be nil
+    end
+    it 'will not authenticate if the email doesnot exist' do
+      user = User.new(
+        name: "Test Name",
+        email: 'test@gmail.com',
+        password: 'password',
+        password_confirmation: 'password'
+      )
+      user.save
+      return_user=User.authenticate_with_credentials("attest@gmail.com","password")
+      expect(return_user).to be nil
+    end
+
   end
 end
